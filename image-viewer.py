@@ -19,7 +19,7 @@ matrix = RGBMatrix(options = options)
 
 mask = Image.open('mask.png').convert('L')
 url = "https://venmopics.appspot.com/u/v1/m/732a8c89-05be-46e3-bdbe-6153a30e95b4"
-name = "@baby-yezzus"
+name = "baby-yezzus"
 response = requests.get(url)
 image = Image.open(BytesIO(response.content))
 
@@ -35,7 +35,7 @@ text_image = Image.new('RGB',(32, 32))
 draw = ImageDraw.Draw(text_image)
 font = ImageFont.truetype("FreeSans.ttf", 10)
 text_width, text_height = draw.textsize(name)
-draw.text((0,0), name,(255,0,0),font=font, align="center")
+draw.text((0,0), "@" + name,(255,0,0),font=font, align="center")
 
 # text_image.thumbnail((matrix.width/2, matrix.height/2), Image.ANTIALIAS)
 
