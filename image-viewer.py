@@ -14,8 +14,8 @@ name = "Josh Martin"
 response = requests.get(url)
 image = Image.open(BytesIO(response.content))
 
-output = ImageOps.fit(image, mask.size, centering=(0.5, 0.5))
-output.putalpha(mask)
+image  = ImageOps.fit(image, mask.size, centering=(0.5, 0.5))
+image.putalpha(mask)
 
 # Configuration for the matrix
 options = RGBMatrixOptions()
@@ -28,9 +28,9 @@ options.brightness= 60
 matrix = RGBMatrix(options = options)
 
 # Make image fit our screen.
-output.thumbnail((matrix.width/2, matrix.height/2), Image.ANTIALIAS)
+image.thumbnail((matrix.width/2, matrix.height/2), Image.ANTIALIAS)
 
-matrix.SetImage(output.convert('RGB'))
+matrix.SetImage(image.convert('RGB'))
 
 try:
     print("Press CTRL-C to stop.")
