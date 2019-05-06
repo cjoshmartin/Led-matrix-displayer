@@ -6,6 +6,18 @@ from rgbmatrix import RGBMatrix, RGBMatrixOptions
 from PIL import Image, ImageFont, ImageDraw, ImageOps
 import requests
 from io import BytesIO
+import firebase_admin
+from dotenv import load_dotenv
+
+## Loading Env variables
+env_path = os.path.dirname(os.path.abspath(__file__)) + '/.env'
+print "Loading env: " + env_path 
+load_dotenv(dotenv_path=env_path, verbose=True)
+
+## Loading Database
+default_app = firebase_admin.initialize_app(
+            ## TODO: Add creditionals 
+        )
 
 # Configuration for the matrix
 options = RGBMatrixOptions()
