@@ -2,35 +2,55 @@ from PIL import Image, ImageFont, ImageDraw, ImageOps
 import requests
 from io import BytesIO
 
-def create_image(name, url, matrix_size):
 
-    mask = Image.open('mask.png').convert('L')
-    username = "@" + name
-    _width,_height = matrix_size
+class display:
+    def __init__(self, matrix_size):
+        self.__font = ImageFont.truetype("FreeSans.ttf", 10)
+        self.__font_color = (255, 0, 0)
+        self.__width, self.__height = matrix_size
 
-    response = requests.get(url)
-    image = Image.open(BytesIO(response.content))
+    def user(self, name, url):
+        mask = Image.open('mask.png').convert('L')
+        username = "@" + name
 
-    image  = ImageOps.fit(image, mask.size, centering=(0.5, 0.5))
-    image.putalpha(mask)
+        response = requests.get(url)
+        image = Image.open(BytesIO(response.content))
 
-    image.thumbnail((_width/2, _height/2), Image.ANTIALIAS)
+        image  = ImageOps.fit(image, mask.size, centering=(0.5, 0.5))
+        image.putalpha(mask)
 
-    image_width, image_height = image.size
+        image.thumbnail((self.__width/2,self.__height/2), Image.ANTIALIAS)
 
-    text_image = Image.new('RGB',(32, 32))
+        image_width, image_height = image.size
 
-    draw = ImageDraw.Draw(text_image)
-    font = ImageFont.truetype("FreeSans.ttf", 10)
-    text_width, text_height = draw.textsize(name)
-    draw.text((0,0),username,(255,0,0),font=font, align="center")
+        text_image = Image.new('RGB',(32, 32))
 
-    img = Image.new('RGB',(_width, _height))
+        draw = ImageDraw.Draw(text_image)
+        font = self.__font
+        text_width, text_height = draw.textsize(name)
+        draw.text(
+                (0,0),
+                username,
+                self.__font_color,
+                font=self.__font, 
+                align="center"
+                )
 
-    img.paste(image,((_width - image_width)/2,0))
-    img.paste(text_image, (0, ((_height + image_height) - text_height)/2))
+        img = Image.new('RGB',(self.__width,self.__height))
 
-    # Make image fit our screen.
-    img.thumbnail((_width, _height), Image.ANTIALIAS)
+        img.paste(image,((self.__width - image_width)/2,0))
+        img.paste(text_image, (0, ((self.__height + image_height) - text_height)/2))
 
-    return img
+        # Make image fit our screen.
+        img.thumbnail((self.__width,self.__height), Image.ANTIALIAS)
+
+        return img
+
+    def message(self):
+        pass # TODO: Create how messages are displayed
+
+    def set_font(self, size=10):
+        self.__font = ImageFont.truetype(font, size)
+
+    def set_font_color(self, color):
+        self.__font_color = color

@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 # Local 
 from database import matrix_db
 from led_matrix import led_matrix
-from create_image import create_image
+from create_image import display
 
 ## Loading Env variables
 folder_path = os.path.dirname(os.path.abspath(__file__)) 
@@ -28,11 +28,11 @@ matrix = led_matrix()
  
 def image_creater_hack(index):
     _name= DB.keys()[index]
+    _display = display(matrix.size)
     print(_name)
-    return create_image(
+    return _display.user(
         name=_name,
         url=DB.data[_name]["profile_picture"], 
-        matrix_size= matrix.size
         )
 try:
     print("Press CTRL-C to stop.")
