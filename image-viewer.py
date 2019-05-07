@@ -25,22 +25,35 @@ DB.printer()
 
 matrix = led_matrix()
 
-img = create_image(
-        name=DB.keys()[1],
-        url=DB.data[DB.keys()[1]]["profile_picture"], 
+ 
+def image_creater_hack(index):
+    _name= DB.keys()[index]
+    print(_name)
+    return create_image(
+        name=_name,
+        url=DB.data[_name]["profile_picture"], 
         matrix_size= matrix.size
         )
-
-
-matrix.display(img)
-
 try:
     print("Press CTRL-C to stop.")
+
     i = 5
-    while i > 0:
-        time.sleep(1)
-        i-= 1
-        print(i)
+    j = 0
+    while True:
+        img = image_creater_hack(j)
+        matrix.display(img)
+
+        while i > 0:
+            time.sleep(1)
+            i-= 1
+            print(i)
+
+        i = 5
+        if j < 1:
+            j += 1
+        else:
+            j = 0
+
 except KeyboardInterrupt:
     sys.exit(0)
 
