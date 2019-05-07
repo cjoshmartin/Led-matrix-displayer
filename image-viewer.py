@@ -28,12 +28,10 @@ matrix = led_matrix()
  
 def image_creater_hack(index):
     _name= DB.keys()[index]
-    _display = display(matrix.size)
+    _data = DB.data[_name]
+    _display = display(matrix.size, _name, _data)
     print(_name)
-    return _display.user(
-        name=_name,
-        url=DB.data[_name]["profile_picture"], 
-        )
+    return _display.user()
 try:
     print("Press CTRL-C to stop.")
 
