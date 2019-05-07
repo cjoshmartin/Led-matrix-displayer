@@ -6,18 +6,28 @@ from rgbmatrix import RGBMatrix, RGBMatrixOptions
 from PIL import Image, ImageFont, ImageDraw, ImageOps
 import requests
 from io import BytesIO
+import os
 import firebase_admin
+from firebase_admin import db
 from dotenv import load_dotenv
+import json
 
 ## Loading Env variables
-env_path = os.path.dirname(os.path.abspath(__file__)) + '/.env'
+folder_path = os.path.dirname(os.path.abspath(__file__)) 
+env_path =  folder_path + '/.env'
 print "Loading env: " + env_path 
 load_dotenv(dotenv_path=env_path, verbose=True)
 
 ## Loading Database
-default_app = firebase_admin.initialize_app(
-            ## TODO: Add creditionals 
-        )
+cred = firebase_admin.credentials.Certificate( folder_path +  "/" + ".service-account-file.json")
+app = firebase_admin.initialize_app(cred, {'databaseURL': os.getenv('DB_URL')})
+print(app.name + " initialized correctly...")
+
+ref = db.reference("/")
+data = ref.get()
+
+print(json.dumps(data, indent=4))
+data_keys = data.keys()
 
 # Configuration for the matrix
 options = RGBMatrixOptions()
@@ -30,8 +40,8 @@ options.hardware_mapping = 'adafruit-hat'  # If you have an Adafruit HAT: 'adafr
 matrix = RGBMatrix(options = options)
 
 mask = Image.open('mask.png').convert('L')
-url = "https://venmopics.appspot.com/u/v1/m/732a8c89-05be-46e3-bdbe-6153a30e95b4"
-name = "baby-yezzus"
+name = data_keys[1]
+url = data[name]["profile_picture"]
 response = requests.get(url)
 image = Image.open(BytesIO(response.content))
 
