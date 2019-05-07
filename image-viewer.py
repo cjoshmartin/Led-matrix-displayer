@@ -7,10 +7,9 @@ from PIL import Image, ImageFont, ImageDraw, ImageOps
 import requests
 from io import BytesIO
 import os
-import firebase_admin
-from firebase_admin import db
 from dotenv import load_dotenv
-import json
+
+from database import firebase_db
 
 ## Loading Env variables
 folder_path = os.path.dirname(os.path.abspath(__file__)) 
@@ -18,16 +17,9 @@ env_path =  folder_path + '/.env'
 print "Loading env: " + env_path 
 load_dotenv(dotenv_path=env_path, verbose=True)
 
-## Loading Database
-cred = firebase_admin.credentials.Certificate( folder_path +  "/" + ".service-account-file.json")
-app = firebase_admin.initialize_app(cred, {'databaseURL': os.getenv('DB_URL')})
-print(app.name + " initialized correctly...")
 
-ref = db.reference("/")
-data = ref.get()
-
-print(json.dumps(data, indent=4))
-data_keys = data.keys()
+DB = firebase_db(folder_path +  "/" + ".service-account-file.json", os.getenv('DB_URL'))
+DB.printer()
 
 # Configuration for the matrix
 options = RGBMatrixOptions()
@@ -40,8 +32,10 @@ options.hardware_mapping = 'adafruit-hat'  # If you have an Adafruit HAT: 'adafr
 matrix = RGBMatrix(options = options)
 
 mask = Image.open('mask.png').convert('L')
-name = data_keys[1]
-url = data[name]["profile_picture"]
+name = DB.keys()[1]
+url = DB.data[name]["profile_picture"]
+username = "@" + name
+
 response = requests.get(url)
 image = Image.open(BytesIO(response.content))
 
@@ -57,7 +51,7 @@ text_image = Image.new('RGB',(32, 32))
 draw = ImageDraw.Draw(text_image)
 font = ImageFont.truetype("FreeSans.ttf", 10)
 text_width, text_height = draw.textsize(name)
-draw.text((0,0), "@" + name,(255,0,0),font=font, align="center")
+draw.text((0,0),username,(255,0,0),font=font, align="center")
 
 img = Image.new('RGB',(matrix.width, matrix.height))
 
