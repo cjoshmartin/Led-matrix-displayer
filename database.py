@@ -26,8 +26,7 @@ class firebase_db:
         return self.get_data().keys()
 
 
-class matrix_db(firebase_db): ## TODO: AttributeError: class firebase_db has no attribute '_matrix_db__init'
-
+class matrix_db(firebase_db): 
     def __init__(self, credentials_path, database_url):
         firebase_db.__init__(self, credentials_path, database_url)
 
