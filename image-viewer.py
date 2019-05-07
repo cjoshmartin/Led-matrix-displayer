@@ -59,8 +59,6 @@ font = ImageFont.truetype("FreeSans.ttf", 10)
 text_width, text_height = draw.textsize(name)
 draw.text((0,0), "@" + name,(255,0,0),font=font, align="center")
 
-# text_image.thumbnail((matrix.width/2, matrix.height/2), Image.ANTIALIAS)
-
 img = Image.new('RGB',(matrix.width, matrix.height))
 
 img.paste(image,((matrix.width - image_width)/2,0))
@@ -74,7 +72,10 @@ matrix.SetImage(img.convert('RGB'))
 
 try:
     print("Press CTRL-C to stop.")
-    while True:
-        time.sleep(100)
+    i = 5
+    while i > 0:
+        time.sleep(1)
+        i-= 1
+        print(i)
 except KeyboardInterrupt:
     sys.exit(0)
