@@ -2,7 +2,6 @@
 import time
 import sys
 
-from rgbmatrix import RGBMatrix, RGBMatrixOptions
 from PIL import Image, ImageFont, ImageDraw, ImageOps
 import requests
 from io import BytesIO
@@ -10,6 +9,8 @@ import os
 from dotenv import load_dotenv
 
 from database import firebase_db
+from led_matrix import led_matrix
+
 
 ## Loading Env variables
 folder_path = os.path.dirname(os.path.abspath(__file__)) 
@@ -21,15 +22,7 @@ load_dotenv(dotenv_path=env_path, verbose=True)
 DB = firebase_db(folder_path +  "/" + ".service-account-file.json", os.getenv('DB_URL'))
 DB.printer()
 
-# Configuration for the matrix
-options = RGBMatrixOptions()
-options.rows = 32
-options.chain_length = 1
-options.parallel = 1
-options.hardware_mapping = 'adafruit-hat'  # If you have an Adafruit HAT: 'adafruit-hat'
-# options.brightness= 60
-
-matrix = RGBMatrix(options = options)
+matrix = led_matrix()
 
 mask = Image.open('mask.png').convert('L')
 name = DB.keys()[1]
@@ -62,7 +55,7 @@ img.paste(text_image, (0, ((matrix.height + image_height) - text_height)/2))
 # Make image fit our screen.
 img.thumbnail((matrix.width, matrix.height), Image.ANTIALIAS)
 
-matrix.SetImage(img.convert('RGB'))
+matrix.display(img)
 
 try:
     print("Press CTRL-C to stop.")
@@ -73,3 +66,5 @@ try:
         print(i)
 except KeyboardInterrupt:
     sys.exit(0)
+
+print("Exiting...")
