@@ -11,8 +11,7 @@ class led_matrix:
         # self.__options.brightness= 60
 
         self.matrix = RGBMatrix(options = self.__options)
-        self.width = self.matrix.width
-        self.height = self.matrix.height
+        self.size = (self.matrix.width, self.matrix.height)
 
     def display(self, image):
         self.matrix.SetImage(image.convert('RGB'))        
