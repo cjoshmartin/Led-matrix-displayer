@@ -37,24 +37,20 @@ def image_creater_hack(index):
 try:
     print("Press CTRL-C to stop.")
 
-    i = 5
     j = 0
     while True:
         img = image_creater_hack(j)
         matrix.display(img)
 
-        while i > 0:
-            time.sleep(1)
-            i-= 1
-            print(i)
+        time.sleep(5)
 
-        i = 5
-        if j < 1:
+        if j < (DB.size() - 1 ):
             j += 1
         else:
             j = 0
 
 except KeyboardInterrupt:
+    print("Exiting...")
     sys.exit(0)
 
 print("Exiting...")

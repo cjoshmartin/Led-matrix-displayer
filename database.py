@@ -24,6 +24,10 @@ class firebase_db:
 
     def keys(self):
         return self.get_data().keys()
+    
+    def size(self):
+        return len(self.data)
+
 
 
 class matrix_db(firebase_db): 
