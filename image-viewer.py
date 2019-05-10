@@ -25,11 +25,19 @@ DB.printer()
 
 matrix = led_matrix()
 
+# TODO: Get current dayj
+# TODO: only grab venmo transactions from day of graduation and Sort by date/time in database
+# TODO: Create a system to see which transactions have been already viewed and do no show them again
+# TODO: Fix how user name are showed
+# TODO: Instruction on how to use the venmo hat
  
 def image_creater_hack(index):
+    from random import randrange
+
+    _color = (randrange(265),randrange(265),randrange(265))
     _name= DB.data["users"].keys()[index]
     _data = DB.data["users"][_name]
-    _display = display(matrix.size, _name, DB)
+    _display = display(matrix.size, _name, DB, _color)
     print(_name)
     return _display
 try:
@@ -44,7 +52,12 @@ try:
             matrix.display(username_img)
             time.sleep(0.05)
 
-        matrix.display(img.message())
+
+        scrolling_message_imgs = img.message()
+
+        for message_img in scrolling_message_imgs:
+            matrix.display(message_img)
+            time.sleep(0.06)
 
         time.sleep(2)
 

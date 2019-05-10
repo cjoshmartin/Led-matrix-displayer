@@ -4,9 +4,9 @@ from io import BytesIO
 import emoji
 
 class display:
-    def __init__(self, matrix_size, name, db):
+    def __init__(self, matrix_size, name, db, color):
         self.__font = ImageFont.truetype("FreeSans.ttf", 10)
-        self.__font_color = (255, 0, 0)
+        self.__font_color = color
         self.__width, self.__height = matrix_size
         self.__username = name
         self.__db  = db
@@ -44,7 +44,7 @@ class display:
 
         image_width, image_height, image = self.__get_user_img()
 
-        text_image = Image.new('RGB',(1000, 32))
+        text_image = Image.new('RGB',(len(self.__username)*32, 32))
 
         draw = ImageDraw.Draw(text_image)
         font = self.__font
@@ -54,7 +54,6 @@ class display:
                 self.set_username(self.__username),
                 self.__font_color,
                 font=self.__font, 
-                align="center"
                 )
 
         output_imgs = []
@@ -73,13 +72,15 @@ class display:
         return output_imgs
 
     def message(self):
-        text_image = Image.new('RGB',(32, 32))
 
-        draw = ImageDraw.Draw(text_image)
-        font = self.set_font(60)
         _payments_dict = self.__db.data["payments"]
         _timestamp = self.__db.data["users"][self.__username]["usage"][0]
         _a_payment = '"' +emoji.demojize(_payments_dict[_timestamp]["message"]) + '"'
+
+        text_image = Image.new('RGB',(32 * len(_a_payment) , 32))
+
+        draw = ImageDraw.Draw(text_image)
+        font = self.set_font(15)
         print(_a_payment)
         text_width, text_height = draw.textsize(_a_payment)
 
@@ -87,14 +88,24 @@ class display:
                 (0,0),
                 _a_payment,
                 self.__font_color,
-                font=self.__font, 
+                font=font, 
                 align="center"
                 )
 
-        concat_images = [
-               (text_image, (0,0)) 
-                ]
-        return self.__output(concat_images)
+        output_imgs = []
+        xpos = 0
+        
+        while xpos < (text_width * 1.2):
+
+            concat_images = [
+                        (text_image, (-xpos, 0))
+                        ]
+
+            output_imgs.append(self.__output(concat_images))
+            xpos += 1
+
+        return output_imgs
+
 
     def set_font(self, size=10):
         return ImageFont.truetype("FreeSans.ttf", size)

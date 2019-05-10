@@ -8,7 +8,7 @@ class led_matrix:
         self.__options.chain_length = 1
         self.__options.parallel = 1
         self.__options.hardware_mapping = 'adafruit-hat'  # If you have an Adafruit HAT: 'adafruit-hat'
-        # self.__options.brightness= 60
+        self.__options.brightness= 70
 
         self.matrix = RGBMatrix(options = self.__options)
         self.size = (self.matrix.width, self.matrix.height)
