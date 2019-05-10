@@ -39,4 +39,6 @@ class matrix_db(firebase_db):
     def get_name(self, index):
         return self.get_keys()[index]
 
+    def size(self):
+        return len(self.get_data()["users"])
 

@@ -27,9 +27,9 @@ matrix = led_matrix()
 
  
 def image_creater_hack(index):
-    _name= DB.keys()[index]
-    _data = DB.data[_name]
-    _display = display(matrix.size, _name, _data)
+    _name= DB.data["users"].keys()[index]
+    _data = DB.data["users"][_name]
+    _display = display(matrix.size, _name, DB)
     print(_name)
     return _display
 try:
@@ -38,9 +38,11 @@ try:
     j = 0
     while True:
         img = image_creater_hack(j)
-        matrix.display(img.user())
+        scrolling_username_img = img.user()
 
-        time.sleep(5)
+        for username_img in scrolling_username_img:
+            matrix.display(username_img)
+            time.sleep(0.05)
 
         matrix.display(img.message())
 
