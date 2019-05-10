@@ -31,16 +31,20 @@ def image_creater_hack(index):
     _data = DB.data[_name]
     _display = display(matrix.size, _name, _data)
     print(_name)
-    return _display.user()
+    return _display
 try:
     print("Press CTRL-C to stop.")
 
     j = 0
     while True:
         img = image_creater_hack(j)
-        matrix.display(img)
+        matrix.display(img.user())
 
         time.sleep(5)
+
+        matrix.display(img.message())
+
+        time.sleep(2)
 
         if j < (DB.size() - 1 ):
             j += 1

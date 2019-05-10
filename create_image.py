@@ -1,7 +1,7 @@
 from PIL import Image, ImageFont, ImageDraw, ImageOps
 import requests
 from io import BytesIO
-
+import emoji
 
 class display:
     def __init__(self, matrix_size, name,data):
@@ -28,9 +28,12 @@ class display:
     
     def __output(self, to_paste=None):
         img = Image.new('RGB',(self.__width,self.__height))
-
-        for paste in to_paste:
-            img.paste(paste[0], paste[1])
+        
+        if to_paste is not None:
+            for paste in to_paste:
+                img.paste(paste[0], paste[1])
+        else:
+            print("Nothing to paste on image")
 
         # Make image fit our screen.
         img.thumbnail((self.__width,self.__height), Image.ANTIALIAS)
@@ -62,7 +65,27 @@ class display:
         return self.__output(concat_images)
 
     def message(self):
-        pass # TODO: Create how messages are displayed
+        text_image = Image.new('RGB',(32, 32))
+
+        draw = ImageDraw.Draw(text_image)
+        font = self.__font
+        _payments_dict = self.__data["payments"]
+        _a_payment = '"' +emoji.demojize(_payments_dict[_payments_dict.keys()[0]]["message"]) + '"'
+        print(_a_payment)
+        text_width, text_height = draw.textsize(_a_payment)
+
+        draw.text(
+                (0,0),
+                _a_payment,
+                self.__font_color,
+                font=self.__font, 
+                align="center"
+                )
+
+        concat_images = [
+               (text_image, (0,0)) 
+                ]
+        return self.__output(concat_images)
 
     def set_font(self, size=10):
         self.__font = ImageFont.truetype(font, size)
