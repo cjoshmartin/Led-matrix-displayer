@@ -106,6 +106,16 @@ class display:
 
         return output_imgs
 
+    def instructions(self):
+        _text = [
+                "To Display a Message",
+                "Venmo",
+                "@baby-yezzus",
+                "Or go to:",
+                "https://cjoshmartin.github.io/Led-matrix-displayer/"]
+        
+
+#   helper functions
 
     def set_font(self, size=10):
         return ImageFont.truetype("FreeSans.ttf", size)

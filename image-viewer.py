@@ -25,11 +25,12 @@ DB.printer()
 
 matrix = led_matrix()
 
-# TODO: Get current dayj
+# TODO: Get current day
 # TODO: only grab venmo transactions from day of graduation and Sort by date/time in database
 # TODO: Create a system to see which transactions have been already viewed and do no show them again
 # TODO: Fix how user name are showed
 # TODO: Instruction on how to use the venmo hat
+# TODO: If transaction is less then $1, then send it back!
  
 def image_creater_hack(index):
     from random import randrange
