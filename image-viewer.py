@@ -36,8 +36,7 @@ def image_creater_hack(index):
     from random import randrange
 
     _color = (randrange(265),randrange(265),randrange(265))
-    _name= DB.data["users"].keys()[index]
-    _data = DB.data["users"][_name]
+    _name= DB.get_data()["users"].keys()[index]
     _display = display(matrix.size, _name, DB, _color)
     print(_name)
     return _display

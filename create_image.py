@@ -3,10 +3,13 @@ import requests
 from io import BytesIO
 import emoji
 from random import randrange
+import os
+
+folder_path = os.path.dirname(os.path.abspath(__file__)) 
 
 class display:
     def __init__(self, matrix_size, name, db, color):
-        self.__font = ImageFont.truetype("FreeSans.ttf", 10)
+        self.__font = ImageFont.truetype("FreeSans.ttf", 11)
         self.__font_color = color
         self.__width, self.__height = matrix_size
         self.__username = name
@@ -15,7 +18,7 @@ class display:
     def __get_user_img(self):
         mask = Image.open('mask.png').convert('L')
 
-        response = requests.get(self.__db.data["users"][self.__username]["profile_picture"])
+        response = requests.get(self.__db.get_data()["users"][self.__username]["profile_picture"])
         image = Image.open(BytesIO(response.content))
 
         image  = ImageOps.fit(image, mask.size, centering=(0.5, 0.5))
@@ -45,7 +48,7 @@ class display:
 
         image_width, image_height, image = self.__get_user_img()
         _text ="The following message is from "+ self.set_username(self.__username) + "..." 
-        text_image = Image.new('RGB',(len(_text)*32, 10))
+        text_image = Image.new('RGB',(len(_text)*32, 15))
 
         draw = ImageDraw.Draw(text_image)
         font = self.__font
@@ -74,8 +77,8 @@ class display:
 
     def message(self):
 
-        _payments_dict = self.__db.data["payments"]
-        _timestamp = self.__db.data["users"][self.__username]["usage"][0]
+        _payments_dict = self.__db.get_data()["payments"]
+        _timestamp = self.__db.get_data()["users"][self.__username]["usage"][0]
         _a_payment = '"' +emoji.demojize(_payments_dict[_timestamp]["message"]) + '"'
 
         text_image = Image.new('RGB',(32 * len(_a_payment) , 32))
