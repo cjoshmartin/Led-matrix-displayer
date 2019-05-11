@@ -107,12 +107,26 @@ class display:
 
             output_imgs.append(self.__output(concat_images))
             xpos += 1
+        
+        del self.__db.data["payments"][_timestamp]
+
+        if len(self.__db.data["users"][self.__username]["usage"]) < 2:
+            del self.__db.data["users"][self.__username]
+        else:
+            del self.__db.data["users"][self.__username]["usage"][0]
+
+        if "past-payments" in  self.__db.data:
+            self.__db.data['past-payments'].append(_timestamp)
+        else:
+            self.__db.data['past-payments'] = [_timestamp]
+
+        self.__db.put(self.__db.data)
 
         return output_imgs
 
     def instructions(self):
         background_color =(256,256,256)
-        _text = "To Display a Message, Venmo Me @Baby-Yezzus"
+        _text = "| To Display a Message, Venmo Me @Baby-Yezzus |"
         
         text_image = Image.new('RGB',(32 * len(_text) , 15) )
 

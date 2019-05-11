@@ -22,11 +22,16 @@ class firebase_db:
         self.data = self.get_data()
 
     def get_data(self):
-        return self.__ref.get()
+        self.data =self.__ref.get()
+        return self.data
 
     def keys(self):
         return self.get_data().keys()
     
+    def put(self, data):
+        self.__ref.set(data)
+        print("Added data successfully")
+
     def size(self):
         return len(self.data)
 
@@ -40,5 +45,8 @@ class matrix_db(firebase_db):
         return self.get_keys()[index]
 
     def size(self):
+        if "users" not in self.get_data():
+            return 0;
+
         return len(self.get_data()["users"])
 
