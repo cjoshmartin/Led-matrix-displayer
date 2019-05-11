@@ -2,6 +2,7 @@ from PIL import Image, ImageFont, ImageDraw, ImageOps
 import requests
 from io import BytesIO
 import emoji
+from random import randrange
 
 class display:
     def __init__(self, matrix_size, name, db, color):
@@ -26,8 +27,8 @@ class display:
 
         return image_width, image_height, image
     
-    def __output(self, to_paste=None):
-        img = Image.new('RGB',(self.__width,self.__height))
+    def __output(self, to_paste=None,background_color=(0,0,0)):
+        img = Image.new('RGB',(self.__width,self.__height), background_color)
         
         if to_paste is not None:
             for paste in to_paste:
@@ -43,15 +44,15 @@ class display:
     def user(self):
 
         image_width, image_height, image = self.__get_user_img()
-
-        text_image = Image.new('RGB',(len(self.__username)*32, 10))
+        _text ="The following message is from "+ self.set_username(self.__username) + "..." 
+        text_image = Image.new('RGB',(len(_text)*32, 10))
 
         draw = ImageDraw.Draw(text_image)
         font = self.__font
-        text_width, text_height = draw.textsize(self.__username)
+        text_width, text_height = draw.textsize(_text)
         draw.text(
                 (0,0),
-                self.set_username(self.__username),
+                _text,
                 self.__font_color,
                 font=self.__font, 
                 )
@@ -107,13 +108,37 @@ class display:
         return output_imgs
 
     def instructions(self):
-        _text = [
-                "To Display a Message",
-                "Venmo",
-                "@baby-yezzus",
-                "Or go to:",
-                "https://cjoshmartin.github.io/Led-matrix-displayer/"]
+        background_color =(256,256,256)
+        _text = "To Display a Message, Venmo Me @Baby-Yezzus"
         
+        text_image = Image.new('RGB',(32 * len(_text) , 15) )
+
+        draw = ImageDraw.Draw(text_image)
+        font = self.set_font(15)
+        text_width, text_height = draw.textsize(_text)
+
+        draw.text(
+                (0,0),
+                _text,
+                self.__font_color,
+                font=font, 
+                align="center"
+                )
+
+        output_imgs = []
+        xpos = 0
+        
+        while xpos < (text_width * 1.2):
+
+            concat_images = [
+                        (text_image, (-xpos, 0))
+                        ]
+
+            _color = (randrange(265),randrange(265),randrange(265))
+            output_imgs.append(self.__output(concat_images, _color))
+            xpos += 1
+
+        return output_imgs
 
 #   helper functions
 

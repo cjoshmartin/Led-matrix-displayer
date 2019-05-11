@@ -51,9 +51,9 @@ try:
         
         for i,username_img in enumerate(scrolling_username_img):
             if i == 0:
-                time.sleep(0.08)
+                time.sleep(0.1)
             matrix.display(username_img)
-            time.sleep(0.05)
+            time.sleep(0.06)
 
 
         scrolling_message_imgs = img.message()
@@ -65,6 +65,15 @@ try:
             time.sleep(0.06)
 
         time.sleep(2)
+
+        scrolling_message_imgs = img.instructions()
+
+        for i,message_img in enumerate(scrolling_message_imgs):
+            if i == 0:
+                time.sleep(0.05)
+            matrix.display(message_img)
+            time.sleep(0.06)
+
 
         if j < (DB.size() - 1 ):
             j += 1
