@@ -28,7 +28,7 @@ matrix = led_matrix()
 # TODO: Get current day
 # TODO: only grab venmo transactions from day of graduation and Sort by date/time in database
 # TODO: Create a system to see which transactions have been already viewed and do no show them again
-# TODO: Fix how user name are showed
+# DONE: Fix how user name are showed
 # TODO: Instruction on how to use the venmo hat
 # TODO: If transaction is less then $1, then send it back!
  
@@ -48,15 +48,19 @@ try:
     while True:
         img = image_creater_hack(j)
         scrolling_username_img = img.user()
-
-        for username_img in scrolling_username_img:
+        
+        for i,username_img in enumerate(scrolling_username_img):
+            if i == 0:
+                time.sleep(0.08)
             matrix.display(username_img)
             time.sleep(0.05)
 
 
         scrolling_message_imgs = img.message()
 
-        for message_img in scrolling_message_imgs:
+        for i,message_img in enumerate(scrolling_message_imgs):
+            if i == 0:
+                time.sleep(0.05)
             matrix.display(message_img)
             time.sleep(0.06)
 

@@ -44,7 +44,7 @@ class display:
 
         image_width, image_height, image = self.__get_user_img()
 
-        text_image = Image.new('RGB',(len(self.__username)*32, 32))
+        text_image = Image.new('RGB',(len(self.__username)*32, 10))
 
         draw = ImageDraw.Draw(text_image)
         font = self.__font
@@ -62,8 +62,8 @@ class display:
         while xpos < text_width:
 
             concat_images = [
-                        (image,((self.__width - image_width)/2,0)),
-                        (text_image, (-xpos, ((self.__height + image_height) - text_height)/2))
+                        (image,(15,15)),
+                        (text_image, (-xpos, 0))
                         ]
 
             output_imgs.append(self.__output(concat_images))
