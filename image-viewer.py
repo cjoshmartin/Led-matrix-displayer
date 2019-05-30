@@ -14,16 +14,25 @@ from led_matrix import led_matrix
 from create_image import display
 import time
 from random import randrange
+import urllib2
+
+def internet_on():
+    try: 
+        urllib2.urlopen('http://216.58.192.142', timeout=1)
+        return True
+    except urllib2.URLError as err:
+        return False
 
 ## Loading Env variables
 folder_path = os.path.dirname(os.path.abspath(__file__)) 
 env_path =  folder_path + '/.env'
 print "Loading env: " + env_path 
 load_dotenv(dotenv_path=env_path, verbose=True)
+DB =None
 
-
-DB = matrix_db(folder_path +  "/" + ".service-account-file.json", os.getenv('DB_URL'))
-DB.printer()
+if internet_on() and DB is None:
+    DB = matrix_db(folder_path +  "/" + ".service-account-file.json", os.getenv('DB_URL'))
+    DB.printer()
 
 matrix = led_matrix()
 
@@ -36,7 +45,7 @@ matrix = led_matrix()
  
 def image_creater_hack(index):
 
-    _color = (randrange(265),randrange(265),randrange(265))
+    _color = (265,265,265)
     _name= DB.get_data()["users"].keys()[index]
     _display = display(matrix.size, _name, DB, _color)
     print(_name)
@@ -46,9 +55,14 @@ try:
     print("Press CTRL-C to stop.")
 
     j = 0
+
     while True:
 
-        if DB.get_data() is not None and "payments" in DB.get_data():
+        if internet_on() and DB is None:
+            DB = matrix_db(folder_path +  "/" + ".service-account-file.json", os.getenv('DB_URL'))
+            DB.printer()
+            
+        if DB is not None and DB.get_data() is not None and "payments" in DB.get_data():
             img = image_creater_hack(j)
             scrolling_username_img = img.user()
             
