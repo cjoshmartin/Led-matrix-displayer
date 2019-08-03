@@ -1,15 +1,15 @@
 import firebase_admin
 from firebase_admin import db ## https://github.com/firebase/firebase-admin-python/blob/18c2395df35977a6444fd95b8f66a29fda3b04a9/tests/test_db.py
 import json
-import urllib2
+import urllib
 
 ## TODO: Add Caching
 
 def internet_on():
     try: 
-        urllib2.urlopen('http://216.58.192.142', timeout=1)
+        urllib.request.urlopen('http://216.58.192.142', timeout=1)
         return True
-    except urllib2.URLError as err:
+    except urllib.error.URLError as err:
         return False
 
 class firebase_db:
