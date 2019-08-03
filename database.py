@@ -1,9 +1,9 @@
 import firebase_admin
 from firebase_admin import db ## https://github.com/firebase/firebase-admin-python/blob/18c2395df35977a6444fd95b8f66a29fda3b04a9/tests/test_db.py
 import json
+import urllib2
 
 ## TODO: Add Caching
-import urllib2
 
 def internet_on():
     try: 
@@ -51,6 +51,9 @@ class matrix_db(firebase_db):
 
     def get_name(self, index):
         return self.get_keys()[index]
+
+    def get_user(self, index):
+        return self.get_data()["users"].keys()[index]
 
     def size(self):
         if "users" not in self.get_data():
