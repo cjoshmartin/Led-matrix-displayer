@@ -18,7 +18,7 @@ class display:
     def __get_user_img(self):
         mask = Image.open('mask.png').convert('L')
 
-        response = requests.get(self.__db.get_data()["users"][self.__username]["profile_picture"])
+        response = requests.get(self.__db.get_profile_photo(self.__username))
         image = Image.open(BytesIO(response.content))
 
         image  = ImageOps.fit(image, mask.size, centering=(0.5, 0.5))
@@ -47,7 +47,7 @@ class display:
     def user(self):
 
         image_width, image_height, image = self.__get_user_img()
-        _text ="The following message is from "+ self.set_username(self.__username) + "..." 
+        _text ="The following message is from {}...".format(self.set_username(self.__username)) 
         text_image = Image.new('RGB',(len(_text)*32, 15))
 
         draw = ImageDraw.Draw(text_image)
@@ -77,9 +77,13 @@ class display:
 
     def message(self):
 
-        _payments_dict = self.__db.get_data()["payments"]
-        _timestamp = self.__db.get_data()["users"][self.__username]["usage"][0]
-        _a_payment = '"' + emoji.demojize(_payments_dict[_timestamp]["message"]).encode('ascii', 'ignore').decode('ascii') + '"'
+        _payments_dict = self.__db.get_message_list()
+        _timestamp = self.__db.get_user_timestamp(self.__username)
+        _a_payment = '"{}"'.format(
+                emoji.demojize(_payments_dict[_timestamp]["message"])
+                    .encode('ascii', 'ignore')
+                    .decode('ascii')
+                )
 
         text_image = Image.new('RGB',(32 * len(_a_payment) , 32))
 
@@ -107,21 +111,13 @@ class display:
 
             output_imgs.append(self.__output(concat_images))
             xpos += 1
-        
-        # del self.__db.data["payments"][_timestamp]
+       
+        # delete entry
+        self.__db.delete_message(_timestamp)
 
-        # if len(self.__db.data["users"][self.__username]["usage"]) < 2:
-            # del self.__db.data["users"][self.__username]
-        # else:
-            # del self.__db.data["users"][self.__username]["usage"][0]
+        self.__db.update_transactions(self.__username)
 
-        # if "past-payments" in  self.__db.data:
-            # if not _timestamp in  self.__db.data['past-payments']:
-                # self.__db.data['past-payments'].append(_timestamp)
-        # else:
-            # self.__db.data['past-payments'] = [_timestamp]
-
-        # self.__db.put(self.__db.data)
+        self.__db.update_past_payments(_timestamp)
 
         return output_imgs
 

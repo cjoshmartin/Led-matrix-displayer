@@ -28,7 +28,7 @@ def is_connected(db = None):
         db.printer()
         return db, db.size()
     else:
-        return db, 0
+        return db, 1
 
 def show_image_buffer(image_buffer, first_iter_sleep, iter_sleep):
 
@@ -78,14 +78,15 @@ def main():
     try:
         print("Press CTRL-C to stop.")
         DB, db_size = is_connected()
-
+        j = 0
         while True:
-            for j in range(db_size - 1):
-                DB, _ = is_connected(DB)
+                DB, db_size = is_connected(DB)
                     
                 display_user(j, DB)
 
                 display_instructions()
+
+                j = j + 1 if j < db_size - 1 else 0 
 
 
     except KeyboardInterrupt:

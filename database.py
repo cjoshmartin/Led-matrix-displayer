@@ -51,16 +51,53 @@ class matrix_db(firebase_db):
 
     def get_name(self, index):
         return self.get_keys()[index]
+    
+    def get_user_timestamp(self, username):
+        return self.get_data()["users"][username]["usage"][0]
+
 
     def get_user(self, index):
         _data = self.get_data()
         _user_dict =_data["users"] 
         _username_list = list(_user_dict.keys())
         return _username_list[index]
+    
+    def get_profile_photo(self, username):
+        return self.get_user_list()[username]["profile_picture"]
+
+    def get_message_list(self):
+        return self.get_data()["payments"]
+
+    def get_user_list(self):
+        return self.get_data()["users"]
 
     def size(self):
         if "users" not in self.get_data():
             return 0;
 
-        return len(self.get_data()["users"])
+        return len(self.get_user_list())
+    
+
+    def delete_message(self, timestamp):
+        del self.data["payments"][timestamp]
+
+        self.put(self.data)
+
+    def update_transactions(self, username):
+        if len(self.get_message_list()[username]["usage"]) < 2:
+            del self.data["users"][username]
+        else:
+            del self.data["users"][username]["usage"][0]
+
+        self.put(self.data)
+
+    def update_past_payments(self, timestamp):
+        if "past-payments" in  self.data:
+            if not timestamp in  self.data['past-payments']:
+                self.data['past-payments'].append(timestamp)
+        else:
+            self.data['past-payments'] = [timestamp]
+
+        self.put(self.data)
+
 
