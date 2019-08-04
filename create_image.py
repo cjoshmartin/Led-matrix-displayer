@@ -79,7 +79,7 @@ class display:
 
         _payments_dict = self.__db.get_data()["payments"]
         _timestamp = self.__db.get_data()["users"][self.__username]["usage"][0]
-        _a_payment = '"' + str(emoji.demojize(_payments_dict[_timestamp]["message"]).encode('ascii', 'ignore')) + '"'
+        _a_payment = '"' + emoji.demojize(_payments_dict[_timestamp]["message"]).encode('ascii', 'ignore').decode('ascii') + '"'
 
         text_image = Image.new('RGB',(32 * len(_a_payment) , 32))
 
