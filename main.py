@@ -38,6 +38,7 @@ def is_connected(db = None):
         return db, 0
 
 def show_image_buffer(image_buffer, first_iter_sleep, iter_sleep):
+
     for i, frame in enumerate(image_buffer):
         if i == 0:
             time.sleep(first_iter_sleep)

@@ -53,7 +53,10 @@ class matrix_db(firebase_db):
         return self.get_keys()[index]
 
     def get_user(self, index):
-        return self.get_data()["users"].keys()[index]
+        _data = self.get_data()
+        _user_dict =_data["users"] 
+        _username_list = list(_user_dict.keys())
+        return _username_list[index]
 
     def size(self):
         if "users" not in self.get_data():
