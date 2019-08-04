@@ -5,22 +5,15 @@ import time
 import sys
 import os
 
-# pip installs
-from dotenv import load_dotenv
-
 # Local 
+from load_env_variables import folder_path
 from database import matrix_db, internet_on
-from led_matrix import led_matrix
+from led_matrix import Matrix_Factory
 from create_image import display
 import time
 from random import randrange
 
-## Loading Env variables
-folder_path = os.path.dirname(os.path.abspath(__file__)) 
-env_path =  folder_path + '/.env'
-print "Loading env: " + env_path 
-load_dotenv(dotenv_path=env_path, verbose=True)
-matrix = led_matrix()
+matrix = Matrix_Factory()
 
 # TODO: Get current day
 # TODO: only grab venmo transactions from day of graduation and Sort by date/time in database

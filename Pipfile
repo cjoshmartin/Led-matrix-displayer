@@ -4,12 +4,14 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+numpy = "*"
+opencv-python = "*"
 
 [packages]
 python-dotenv = "*"
 firebase-admin = "*"
-pillow = "*"
 emoji = "*"
+pillow = "*"
 
 [requires]
 python_version = "3.7"
