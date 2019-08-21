@@ -22,78 +22,87 @@ matrix = Matrix_Factory()
 # DONE: Instruction on how to use the venmo hat
 # TODO: If transaction is less then $1, then send it back!
  
-def is_connected(db = None):
-    if internet_on() and db is None:
-        db = matrix_db(folder_path +  "/" + ".service-account-file.json", os.getenv('DB_URL'))
-        db.printer()
-        return db, db.size()
-    else:
-        return db, 1
+class Matrix_Service:
+    def __init__(self):
+         self.__db = None
+         self.__image = None
+         self.__user_index = 0
 
-def show_image_buffer(image_buffer, first_iter_sleep, iter_sleep):
+    def is_connected(self):
+        if internet_on() and self.__db is None:
+            self.__db = matrix_db(folder_path +  "/" + ".service-account-file.json", os.getenv('DB_URL'))
+            self.__db.printer()
+            return self.__db, self.__db.size()
+        else:
+            self.__db = None
+            return self.__db, 1
+        
+    def __increment_user(self):
+        _, _size = self.is_connected()
+        self.__user_index = self.__user_index + 1 if self.__user_index < _size - 1 else 0 
 
-    for i, frame in enumerate(image_buffer):
-        if i == 0:
-            time.sleep(first_iter_sleep)
-        matrix.display(frame)
-        time.sleep(iter_sleep)
+    def show_image_buffer(self, image_buffer, first_iter_sleep, iter_sleep):
 
-def create_image_from_user_data(index, DB):
-    _color = (265,265,265)
-    _name= DB.get_user(index)
-    _display = display(matrix.size, _name, DB, _color)
-    print(_name)
-    
-    return _display
+        for i, frame in enumerate(image_buffer):
+            if i == 0:
+                time.sleep(first_iter_sleep)
+            matrix.display(frame)
+            time.sleep(iter_sleep)
 
-def display_user_info(img):
-    scrolling_username_buffer = img.user()
-    show_image_buffer(scrolling_username_buffer, 0.1, 0.06)
+    def create_image_from_user_data(self):
+        _color = (265,265,265)
+        _name= self.__db.get_user(self.__user_index)
+        _display = display(matrix.size, _name, self.__db, _color)
+        print(_name)
+        
+        return _display
 
-def display_user_message(img):
-    scrolling_message_buffer = img.message()
-    show_image_buffer(scrolling_message_buffer, 0.05, 0.06)
+    def display_user_info(self):
+        scrolling_username_buffer = self.__image.user()
+        self.show_image_buffer(scrolling_username_buffer, 0.1, 0.06)
 
-def display_user(index, DB):
-    if DB is not None and DB.get_data() is not None and "payments" in DB.get_data():
-        img = create_image_from_user_data(index, DB)
+    def display_user_message(self):
+        scrolling_message_buffer = self.__image.message()
+        self.show_image_buffer(scrolling_message_buffer, 0.05, 0.06)
 
-        display_user_info(img)
+    def display_user(self):
+        if self.__db is not None and self.__db.get_data() is not None and "payments" in self.__db.get_data():
 
-        display_user_message(img)
+            self.__image = self.create_image_from_user_data()
 
-        time.sleep(2)
+            self.self.display_user_info()
 
-    else:
-        pass # Todo 
+            self.display_user_message()
 
-def display_instructions ():
-    _="NOOP"
-    _color = (randrange(265),randrange(265),randrange(265))
-    instructions_message_buffer = display(matrix.size, _, _, _color).instructions()
-    show_image_buffer(instructions_message_buffer, 0.05, 0.06)
+            time.sleep(2)
+
+
+    def display_instructions (self):
+        _="NOOP"
+        _color = (randrange(265),randrange(265),randrange(265))
+        instructions_message_buffer = display(matrix.size, _, _, _color).instructions()
+        self.show_image_buffer(instructions_message_buffer, 0.05, 0.06)
+
+    def play(self):
+        try:
+            print("Press CTRL-C to stop.")
+            while True:
+                    self.is_connected()
+                    self.display_user()
+                    self.display_instructions()
+                    self.__increment_user()
+
+        except KeyboardInterrupt:
+            print("\nExiting...")
+            sys.exit(0)
+
 
 #----------------------------------------------------------
 def main():
-    try:
-        print("Press CTRL-C to stop.")
-        DB, db_size = is_connected()
-        j = 0
-        while True:
-                DB, db_size = is_connected(DB)
-                    
-                display_user(j, DB)
+    service = Matrix_Service()
+    service.play()
 
-                display_instructions()
-
-                j = j + 1 if j < db_size - 1 else 0 
-
-
-    except KeyboardInterrupt:
-        print("Exiting...")
-        sys.exit(0)
-
-    print("Exiting...")
+#----------------------------------------------------------
 
 if __name__ == "__main__":
     main()
